@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Você me ama?</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: #fff;
+      overflow-x: hidden;
+      height: 100%;
+      background-image: url('../Pedido-de-Namoro-main/img/fundo.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path fill="#ff0080" d="M15 0C7.015 0 0 7.015 0 15s7.015 15 15 15 15-7.015 15-15S22.985 0 15 0zm-3.5 16.25c-1.15 0-2.125-.675-2.125-2.125 0-1.15.675-2.125 2.125-2.125 1.15 0 2.125.675 2.125 2.125 0 1.15-.675 2.125-2.125 2.125zm3.5-9c-1.15 0-2.125-.675-2.125-2.125 0-1.15.675-2.125 2.125-2.125 1.15 0 2.125.675 2.125 2.125 0 1.15-.675 2.125-2.125 2.125z"/></svg>'), auto;
+    }
+
+    h1 {
+      margin-top: 10vh;
+      font-size: 2.5rem;
+      color: #ffffff;
+      text-shadow: 1px 1px 3px #000;
+      padding: 0 1rem;
+    }
+
+    .botoes-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2rem 0;
+    }
+
+    .botao {
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      background-color: #ff0080;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .botao:hover {
+      transform: scale(1.1);
+    }
+
+    #nao {
+      position: absolute;
+      transition: transform 0.2s, background-color 0.2s, top 0.3s, left 0.3s;
+    }
+
+    #nao:hover {
+      background-color: #f00;
+    }
+
+    .animacao {
+      display: none;
+      margin-top: 3rem;
+      font-size: 1.5rem;
+      color: #ffffff;
+      text-shadow: 1px 1px 2px #000;
+    }
+
+    .coracao {
+      position: absolute;
+      font-size: 2rem;
+      pointer-events: none;
+    }
+
+    .coracao.vermelho { color: red; animation: explodir 1s ease-out forwards; }
+    .coracao.azul { color: deepskyblue; animation: explodir 1.5s ease-out forwards; }
+    .coracao.verde { color: limegreen; animation: explodir 1.2s ease-out forwards; }
+
+    @keyframes explodir {
+      0% { opacity: 1; transform: scale(0); }
+      100% { opacity: 0; transform: scale(2); }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .botao {
+        font-size: 1rem;
+        padding: 0.7rem 1.2rem;
+      }
+
+      .animacao {
+        font-size: 1.2rem;
+      }
+
+      .botoes-container {
+        height: 250px;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Você me ama?</h1>
+
+  <div class="botoes-container">
+    <button id="sim" class="botao">Sim</button>
+    <button id="nao" class="botao">Não</button>
+  </div>
+
+  <div id="animacao" class="animacao">
+    Teu pai é mecânico?<br/>
+    Porque você é uma graxinha! 🛠️😏
+  </div>
+
+  <audio id="musicaFundo" src="../Pedido-de-Namoro-main/audio/musica-romantica.mp3" preload="auto" loop></audio>
+
+  <script>
+    const sim = document.getElementById("sim");
+    const nao = document.getElementById("nao");
+    const animacao = document.getElementById("animacao");
+    const musicaFundo = document.getElementById("musicaFundo");
+
+    sim.addEventListener("click", () => {
+      sim.style.display = "none";
+      nao.style.display = "none";
+      animacao.style.display = "block";
+      musicaFundo.play().catch(() => {
+        console.log("Autoplay bloqueado");
+      });
+    });
+
+    document.addEventListener("mousemove", e => {
+      const rect = nao.getBoundingClientRect();
+      const dx = e.clientX - (rect.left + rect.width / 2);
+      const dy = e.clientY - (rect.top + rect.height / 2);
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 100) {
+        moverBotaoNao();
+      }
+    });
+
+    function moverBotaoNao() {
+      const container = document.querySelector(".botoes-container");
+      const maxX = container.offsetWidth - nao.offsetWidth;
+      const maxY = container.offsetHeight - nao.offsetHeight;
+      let newX = Math.random() * maxX;
+      let newY = Math.random() * maxY;
+      nao.style.left = `${newX}px`;
+      nao.style.top = `${newY}px`;
+    }
+
+    function criarCoracao(x, y) {
+      const c = document.createElement("div");
+      c.classList.add("coracao");
+
+      const cores = ["vermelho", "azul", "verde"];
+      c.classList.add(cores[Math.floor(Math.random() * cores.length)]);
+
+      const emojis = ['❤️', '🩷', '💖', '💘', '💝', '💗', '💕', '💞', '💓'];
+      c.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      c.style.left = `${x}px`;
+      c.style.top = `${y}px`;
+      document.body.appendChild(c);
+
+      setTimeout(() => c.remove(), 1500);
+    }
+
+    document.addEventListener("click", e => criarCoracao(e.clientX, e.clientY));
+    document.addEventListener("touchstart", e => {
+      const touch = e.touches[0];
+      criarCoracao(touch.clientX, touch.clientY);
+    });
+
+    // Posicionar inicialmente o botão "não"
+    window.addEventListener("load", () => {
+      moverBotaoNao();
+    });
+  </script>
+</body>
+</html>
